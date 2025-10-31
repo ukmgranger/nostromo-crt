@@ -1,0 +1,1526 @@
+title: Home
+sections:
+  - type: grid
+    cards:
+      - type: picture
+        grid_options:
+          columns: 6
+          rows: auto
+        image: /api/image/serve/c20eae39fb5d134a97df863742696404/512x512
+        card_mod:
+          style: |
+            ha-card {
+              background: transparent;
+              border: transparent;
+              filter: drop-shadow(0 0 8px rgba(0,255,122,0.25));
+            }
+      - clock_style: digital
+        clock_size: large
+        time_format: "12"
+        show_seconds: false
+        no_background: true
+        type: clock
+        face_style: markers
+        card_mod:
+          style: |
+            ha-card {
+              --g: var(--nostromo-green, #00ff7a);
+              --a: var(--nostromo-amber, #ffb000);
+              border: 1px solid rgba(0,255,122,0.18);
+              padding: 8px 12px;
+              font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+              color: var(--g);
+              letter-spacing: 1.5px;
+              font-size: 20px !important;
+            }
+      - type: markdown
+        entity_id:
+          - sensor.pagoda_temperature
+          - sensor.average_house_temperature
+        content: >
+          :. OUTSIDE: {{ (states('sensor.pagoda_temperature') | float(0) |
+          round(1, 'half')) }}°C | INSIDE: {{
+          (states('sensor.average_house_temperature') | float(0) | round(1,
+          'half')) }}°C
+        card_mod:
+          style: |
+            ha-card {
+              --g: var(--nostromo-green, #00ff7a);
+              background: transparent;
+              border: transparent;
+              padding: 0px 12px;
+              font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+              color: var(--g);
+              letter-spacing: 2px;
+              font-size: 18px !important;
+              white-space: normal;
+              overflow-wrap: anywhere;
+              text-align: start !important;
+            }
+      - type: markdown
+        entity_id:
+          - climate.thermostat_1
+          - binary_sensor.thermostat_1_state
+        content: >
+          :. HEATING: {{ (state_attr('climate.thermostat_1',
+          'current_temperature') | float(0) | round(1, 'half')) }}°C/{{
+          (state_attr('climate.thermostat_1', 'temperature') | float(0) |
+          round(1, 'half')) }}°C {{ states('climate.thermostat_1') | upper }} {%
+          if state_attr('climate.thermostat_1', 'hvac_action') == 'heating'
+          %}(ON){% else %}(OFF){% endif %}
+        card_mod:
+          style: |
+            ha-card {
+              --g: var(--nostromo-green, #00ff7a);
+              --a: var(--nostromo-amber, #ffb000);
+              background: transparent;
+              border: transparent;
+              padding: 0px 12px;
+              font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+              color: {% if states('binary_sensor.thermostat_1_state') == 'on' %} var(--a) {% else %} var(--g) {% endif %};
+              letter-spacing: 2px;
+              font-size: 18px !important;
+              white-space: normal;
+              overflow-wrap: anywhere;
+              margin-top: -24px !important;
+              height: auto !important;
+              min-height: 0 !important;
+            }
+            ha-markdown {
+              border-bottom: 2px solid var(--g);
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+      - square: false
+        type: grid
+        cards:
+          - show_name: true
+            show_icon: false
+            type: button
+            entity: climate.thermostat_1
+            name: Adjust Environment
+            show_state: true
+            tap_action:
+              action: navigate
+              navigation_path: "#thermostat"
+            card_mod:
+              class: nostromo-base nostromo-button
+              style: |
+                ha-card {
+                  font-size: 16px !important;
+                }
+          - square: false
+            type: grid
+            cards:
+              - type: custom:button-card
+                entity: climate.thermostat_1
+                icon: mdi:chevron-up
+                show_name: false
+                show_state: false
+                tap_action:
+                  action: call-service
+                  service: script.thermostat_adjust
+                  data:
+                    delta: up
+                card_mod:
+                  class: nostromo-base nostromo-button
+                  style: |
+                    ha-card {
+                      height: 60px !important;
+                    }
+              - type: custom:button-card
+                entity: climate.thermostat_1
+                icon: mdi:chevron-down
+                show_name: false
+                show_state: false
+                tap_action:
+                  action: call-service
+                  service: script.thermostat_adjust
+                  data:
+                    delta: down
+                card_mod:
+                  class: nostromo-base nostromo-button
+                  style: |
+                    ha-card {
+                      height: 60px !important;
+                    }
+            columns: 2
+        columns: 2
+  - type: grid
+    cards:
+      - type: markdown
+        text_only: true
+        entity_id:
+          - sensor.time
+          - person.martin
+          - person.clare
+          - person.erin
+          - alarm_control_panel.alarmo
+          - sensor.bin_day_sensor
+        content: >
+          USCSS 23DC  |  DATE: {{ now().strftime('%d%m%y') }}  |  CREW: {{
+          expand('person.martin','person.clare','person.erin')
+             | selectattr('state','eq','home') | list | length }}
+          NEXT BIN: {{ state_attr('sensor.bin_day_sensor', 'bin_type') | upper
+          }} {{ states('sensor.bin_day_sensor') }} |  </br>SECURITY: {{
+          states('alarm_control_panel.alarmo') | upper }}
+        card_mod:
+          style: |
+            @media (prefers-reduced-motion: reduce) {
+              ha-card ha-markdown::after { animation: none !important; }
+            }
+
+            ha-card {
+              --g: var(--nostromo-green, #00ff7a);
+              --a: var(--nostromo-amber, #ffb000);
+              background: transparent;
+              border: none;
+              padding: 0 12px !important;
+              font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+              text-transform: uppercase;
+              color: var(--g);
+              letter-spacing: 2px;
+              font-size: 18px !important;
+              white-space: normal;
+              overflow-wrap: anywhere;
+            }
+
+            /* pulse effect instead of blink */
+            @keyframes nostromo-pulse {
+              0%, 100% { text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+              50%      { text-shadow: 0 0 6px currentColor; }
+            }
+
+            ha-card ha-markdown::after {
+              content: "\200B";
+              display: inline-block;
+              vertical-align: middle;
+              width: 10px;
+              background-size: 10px 10px; 
+              background: url('/local/nostromo_cursor3.gif') no-repeat center center;
+            }
+      - type: custom:vertical-stack-in-card
+        cards:
+          - square: false
+            type: grid
+            columns: 3
+            cards:
+              - type: button
+                show_name: true
+                show_icon: false
+                show_state: true
+                entity: input_boolean.guest_mode_switch
+                grid_options:
+                  columns: 6
+                  rows: 1
+                tap_action:
+                  action: toggle
+                name: GUEST MODE
+                card_mod:
+                  style: |
+                    ha-card {
+                      --g: var(--nostromo-green, #00ff7a);
+                      --a: var(--nostromo-amber, #ffb000);
+                      background: transparent;
+                      border: transparent;
+                      padding: 10px;
+                      font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+                      color: var(--g);
+                      letter-spacing: 1px;
+                      font-size: 18px !important;
+                      border-radius: 1px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      box-sizing: border-box;
+                    }
+                    .state {
+                      color: var(--a) !important;
+                    }
+              - type: button
+                show_name: true
+                show_icon: false
+                show_state: true
+                entity: alarm_control_panel.alarmo
+                grid_options:
+                  columns: 6
+                  rows: 1
+                tap_action:
+                  action: perform-action
+                  target:
+                    entity_id:
+                      - alarm_control_panel.alarmo
+                  perform_action: alarm_control_panel.alarm_arm_home
+                name: ARM SECURITY
+                card_mod:
+                  style: |
+                    ha-card {
+                      --g: var(--nostromo-green, #00ff7a);
+                      --a: var(--nostromo-amber, #ffb000);
+                      background: transparent;
+                      border:  {% if is_state('alarm_control_panel.alarmo', 'disarmed') %} 2px solid var(--a) {% else %} transparent {% endif %};
+                      padding: 10px;
+                      color: var(--g);
+                      letter-spacing: 1px;
+                      font-size: 18px !important;
+                      border-radius: 1px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      box-sizing: border-box;
+                      font-family: var(--nostromo-font, ui-monospace, Menlo, Consolas, monospace);
+                      filter: drop-shadow(0 0 6px rgba(255, 176, 0, 0.55));
+                      }
+                    .state {
+                      color: var(--a) !important;
+                    }
+              - show_name: true
+                show_icon: false
+                type: button
+                show_state: true
+                entity: alarm_control_panel.alarmo
+                grid_options:
+                  columns: 6
+                  rows: 1
+                tap_action:
+                  action: navigate
+                  navigation_path: "#security"
+                name: DISARM SECURITY
+                card_mod:
+                  style: |
+                    ha-card {
+                      --g: var(--nostromo-green, #00ff7a);
+                      --a: var(--nostromo-amber, #ffb000);
+                      background: transparent;
+                      border:  {% if is_state('alarm_control_panel.alarmo', 'armed_home') %} 2px solid var(--a) {% else %} transparent {% endif %};
+                      padding: 10px;
+                      font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+                      color: var(--g);
+                      letter-spacing: 1px;
+                      font-size: 18px !important;
+                      border-radius: 1px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      box-sizing: border-box;
+                      filter: drop-shadow(0 0 6px rgba(255, 176, 0, 0.55));
+                    }
+                    .state {
+                      color: var(--a) !important;
+                    }
+        card_mod:
+          style: |
+            ha-card {
+              box-shadow: none !important;
+              border-top: 2px solid #00ff7a !important;
+              border-bottom: 2px solid #00ff7a !important;
+              border-left: none !important;
+              border-right: none !important;
+              border-radius: 0 !important;
+              background: transparent !important;
+              padding: 6px 0 !important;  /* Space for buttons */
+              margin: 0 !important;
+            }
+      - square: true
+        type: grid
+        cards:
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: sensor.met_office_derbyshire_warnings
+                state_not: "0"
+            card:
+              show_name: false
+              show_icon: true
+              type: button
+              show_state: false
+              entity: sensor.met_office_derbyshire_warnings
+              grid_options:
+                columns: 6
+                rows: 1
+              tap_action:
+                action: navigate
+                navigation_path: "#weather_warning"
+              icon: mdi:weather-cloudy-alert
+              card_mod:
+                class: nostromo-base nostromo-button-red
+                style: |
+                  @media (prefers-reduced-motion: reduce) {
+                    ha-card { animation: none !important; }
+                  }
+                  ha-card {
+                    --pulse: 0 0 0 0 rgba(255,59,48,0.6);
+                    animation: warning-pulse 2.4s ease-in-out 8; /* finite */
+                  }
+                  @keyframes warning-pulse {
+                    0%, 100% { box-shadow: var(--pulse); }
+                    50%      { box-shadow: 0 0 0 8px rgba(255,59,48,0.0); }
+                  }
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: sensor.chores_check
+                state: "True"
+            card:
+              show_name: false
+              show_icon: true
+              type: button
+              show_state: false
+              entity: sensor.chores_check
+              grid_options:
+                columns: 6
+                rows: 1
+              tap_action:
+                action: navigate
+                navigation_path: "#chores"
+              icon: mdi:flower-poppy
+              card_mod:
+                class: nostromo-base nostromo-button-red
+                style: |
+                  @media (prefers-reduced-motion: reduce) {
+                    ha-card { animation: none !important; }
+                  }
+                  ha-card {
+                    --pulse: 0 0 0 0 rgba(255,59,48,0.6);
+                    animation: warning-pulse 2.4s ease-in-out 8; /* finite */
+                  }
+                  @keyframes warning-pulse {
+                    0%, 100% { box-shadow: var(--pulse); }
+                    50%      { box-shadow: 0 0 0 8px rgba(255,59,48,0.0); }
+                  }
+          - show_name: true
+            show_icon: true
+            type: button
+            icon: mdi:palette-swatch
+            tap_action:
+              action: call-service
+              service: frontend.reload_themes
+            card_mod:
+              class: nostromo-base nostromo-button
+              style: ""
+        columns: 4
+        grid_options:
+          columns: 6
+          rows: 1
+  - type: grid
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              LOWER DECK // LIGHTING CONTROL
+            card_mod:
+              style: |
+                ha-card {
+                  --g: var(--nostromo-green, #00ff7a);
+
+                  background: transparent;
+                  border: none;
+                  padding: 8px 12px;
+                  font-size: 20px !important;
+                  font-family: var(--nostromo-font, ui-monospace, Menlo, Consolas, monospace);
+                }
+
+                ha-markdown {
+                  display: inline-block;          /* shrink to fit text */
+                  border-bottom: 2px solid var(--g); /* adjustable line */
+                  padding-bottom: 4px;            /* spacing between text and line */
+                  letter-spacing: 2px;
+                  color: var(--g);
+                }
+      - show_name: true
+        show_icon: false
+        type: button
+        entity: group.kitchen
+        name: KITCHEN
+        show_state: false
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+            ha-card::after {
+              content: "{{ (states('sensor.kitchen_motion_temperature') | float(0) | round(1, 'half') ) }}°C";
+            }
+      - show_name: true
+        show_icon: false
+        type: button
+        show_state: false
+        entity: group.snug
+        name: SNUG
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+            ha-card::after {
+              content: "{{ (states('sensor.motion_snug_temperature') | float(0) | round(1, 'half') ) }}°C";
+            }
+      - show_name: true
+        show_icon: false
+        type: button
+        show_state: false
+        entity: group.hall
+        name: HALL
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+      - show_name: true
+        show_icon: false
+        type: button
+        show_state: false
+        entity: light.office
+        name: OFFICE
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+      - show_name: true
+        show_icon: false
+        type: button
+        show_state: false
+        entity: group.outside
+        name: OUTSIDE
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+            ha-card::after {
+              content: "{{ (states('sensor.pagoda_temperature') | float(0) | round(1, 'half') ) }}°C";
+            }
+      - show_name: true
+        show_icon: false
+        type: button
+        show_state: false
+        entity: light.utility_ceiling
+        name: UTILITY
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+            ha-card::after {
+              content: "{{ (states('sensor.utility_motion_temperature') | float(0) | round(1, 'half') ) }}°C";
+            }
+      - show_name: true
+        show_icon: false
+        type: button
+        show_state: false
+        entity: light.wc_wall
+        name: WC
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+      - show_name: true
+        show_icon: false
+        type: button
+        show_state: false
+        entity: switch.garage_light
+        name: GARAGE
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+  - type: grid
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              UPPER DECK // LIGHTING CONTROL
+            card_mod:
+              style: |
+                ha-card {
+                  --g: var(--nostromo-green, #00ff7a);
+
+                  background: transparent;
+                  border: none;
+                  padding: 8px 12px;
+                  font-size: 20px !important;
+                  font-family: var(--nostromo-font, ui-monospace, Menlo, Consolas, monospace);
+                }
+
+                ha-markdown {
+                  display: inline-block;          /* shrink to fit text */
+                  border-bottom: 2px solid var(--g); /* adjustable line */
+                  padding-bottom: 4px;            /* spacing between text and line */
+                  letter-spacing: 2px;
+                  color: var(--g);
+                }
+      - show_name: true
+        show_icon: false
+        type: button
+        show_state: false
+        entity: group.master_bedroom
+        name: MASTER SUITE
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+      - show_name: true
+        show_icon: false
+        type: button
+        show_state: false
+        entity: light.ensuite
+        name: ENSUITE
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+            ha-card::after {
+              content: "{{ (states('sensor.ensuite_motion_temperature') | float(0) | round(1, 'half') ) }}°C";
+            }
+      - show_name: true
+        show_icon: false
+        type: button
+        show_state: false
+        entity: light.dressing_room
+        name: DRESSING ROOM
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+      - show_name: true
+        show_icon: false
+        type: button
+        show_state: false
+        entity: group.erins_bedroom
+        name: ERINS ROOM
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+      - type: button
+        show_name: true
+        show_icon: false
+        show_state: false
+        entity: light.landing
+        name: LANDING
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+      - type: button
+        show_name: true
+        show_icon: false
+        show_state: false
+        entity: light.bathroom_dimmer
+        name: BATHROOM
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+            ha-card::after {
+              content: "{{ (states('sensor.bathroom_motion_hue_temperature') | float(0) | round(1, 'half') ) }}°C";
+            }
+      - show_name: true
+        show_icon: false
+        type: button
+        show_state: false
+        entity: group.guest_room
+        name: GUEST ROOM
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+      - type: button
+        show_name: true
+        show_icon: false
+        show_state: false
+        entity: light.bedroom_4
+        name: BEDROOM 4
+        grid_options:
+          columns: 6
+          rows: 1
+        tap_action:
+          action: toggle
+        card_mod:
+          class: nostromo-base nostromo-button nostromo-kitchen-base
+          style: |
+            ha-card::before {
+              background:
+                {% if is_state(config.entity, 'on') %}
+                  var(--g, #00ff7a)
+                {% else %}
+                  transparent
+                {% endif %};
+            }
+  - type: grid
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#thermostat"
+            button_type: state
+            styles: |
+              card_mod:
+                style: |
+                  ha-card {
+                    --g: var(--nostromo-green, #00ff7a);
+                    --a: var(--nostromo-amber, #ffb000);
+                    background: transparent;
+                    border: 1px solid rgba(0,255,122,0.3);
+                    padding: 8px;
+                    font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+                    color: var(--g);
+                    letter-spacing: 1px;
+                    font-size: 16px;
+                    border-radius: 4px;
+                    height: 60px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 !important;
+                    min-height: 0 !important;
+                  }
+              #root:not(.editor) {
+                top: ${this.config.more_info_popup?.center ? 'auto' : this.config.more_info_popup?.top || '40px'} !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                bottom: ${this.config.more_info_popup?.bottom || 'auto'} !important;
+                height: auto !important;
+                max-height: ${this.config.more_info_popup?.max_height || 'calc(100% - 72px)'} !important;
+                width: 96%;
+                font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+                --desktop-width: ${this.config.more_info_popup?.dt_width || '60vw'} !important;
+                align-self: ${this.config.more_info_popup?.center ? 'anchor-center' : 'none'};
+                transition: transform 0.4s ease !important;
+              }
+              .bubble-close-button {
+                transition: ${this.config.more_info_popup?.window_speed || 'all 0.4s ease'} !important;
+              }
+              .bubble-pop-up-container {
+                padding: 20px !important;
+                mask-image: none !important;
+                overflow: scroll;
+                grid-gap: 7px;
+              }
+              .bubble-pop-up-background {
+                border-radius:  1px !important;
+                border: solid 4px #00ff7a !important;
+              }
+              .bubble-backdrop {
+                background-color: ${this.config.more_info_popup?.bg_color || 'rgba(0, 0, 0, 0.2)'} !important;
+                backdrop-filter: ${this.config.more_info_popup?.bd_filter || 'blur(10px)'} !important;
+                transition-delay: 0 !important;
+                transition: opacity 0.2s !important;
+              }
+              .bubble-backdrop.is-visible {
+                opacity: 0.7 !important;
+              }
+              .is-popup-closed:not(.editor) { 
+                transform: ${this.config.more_info_popup?.window_ani || 'scale(0.1)'} !important;
+                opacity: ${this.config.more_info_popup?.window_ani === 'scale(0.1)' ? '0.1' : 'null'} !important;
+                transition: opacity 0.4s ease !important;
+              }
+              .is-popup-opened {
+                opacity: 1 !important;
+                transition: opacity 0.4s ease !important;
+              }
+            modules:
+              - "!default"
+            show_header: true
+            entity: climate.thermostat_1
+            name: Central Heating
+            show_icon: false
+            show_state: false
+            show_name: false
+            card_layout: normal
+          - type: thermostat
+            entity: climate.thermostat_1
+            theme: Nostromo CRT 2
+          - type: history-graph
+            entities:
+              - entity: climate.thermostat_1
+            logarithmic_scale: false
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#security"
+            button_type: state
+            styles: |
+              card_mod:
+                style: |
+                  ha-card {
+                    --g: var(--nostromo-green, #00ff7a);
+                    --a: var(--nostromo-amber, #ffb000);
+                    background: transparent;
+                    border: 1px solid rgba(0,255,122,0.3);
+                    padding: 8px;
+                    font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+                    color: var(--g);
+                    letter-spacing: 1px;
+                    font-size: 16px;
+                    border-radius: 4px;
+                    height: 60px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 !important;
+                    min-height: 0 !important;
+                  }
+              #root:not(.editor) {
+                top: ${this.config.more_info_popup?.center ? 'auto' : this.config.more_info_popup?.top || '40px'} !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                bottom: ${this.config.more_info_popup?.bottom || 'auto'} !important;
+                height: auto !important;
+                max-height: ${this.config.more_info_popup?.max_height || 'calc(100% - 72px)'} !important;
+                width: 96%;
+                font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+                --desktop-width: ${this.config.more_info_popup?.dt_width || '60vw'} !important;
+                align-self: ${this.config.more_info_popup?.center ? 'anchor-center' : 'none'};
+                transition: transform 0.4s ease !important;
+              }
+              .bubble-close-button {
+                transition: ${this.config.more_info_popup?.window_speed || 'all 0.4s ease'} !important;
+              }
+              .bubble-pop-up-container {
+                padding: 20px !important;
+                mask-image: none !important;
+                overflow: scroll;
+                grid-gap: 7px;
+              }
+              .bubble-pop-up-background {
+                border-radius:  1px !important;
+                border: solid 4px #00ff7a !important;
+              }
+              .bubble-backdrop {
+                background-color: ${this.config.more_info_popup?.bg_color || 'rgba(0, 0, 0, 0.2)'} !important;
+                backdrop-filter: ${this.config.more_info_popup?.bd_filter || 'blur(10px)'} !important;
+                transition-delay: 0 !important;
+                transition: opacity 0.2s !important;
+              }
+              .bubble-backdrop.is-visible {
+                opacity: 0.7 !important;
+              }
+              .is-popup-closed:not(.editor) { 
+                transform: ${this.config.more_info_popup?.window_ani || 'scale(0.1)'} !important;
+                opacity: ${this.config.more_info_popup?.window_ani === 'scale(0.1)' ? '0.1' : 'null'} !important;
+                transition: opacity 0.4s ease !important;
+              }
+              .is-popup-opened {
+                opacity: 1 !important;
+                transition: opacity 0.4s ease !important;
+              }
+            modules:
+              - "!default"
+            show_header: true
+            entity: alarm_control_panel.alarmo
+            name: Central Heating
+            show_icon: false
+            show_state: false
+            show_name: false
+            card_layout: normal
+          - type: custom:alarmo-card
+            entity: alarm_control_panel.alarmo
+            name: SECURITY
+            keep_keypad_visible: true
+            use_clear_icon: false
+            button_scale_actions: 1.2
+            button_scale_keypad: 1.3
+            states: {}
+            show_messages: true
+            show_ready_indicator: true
+            show_bypassed_sensors: true
+            use_code_dialog: false
+            hide_keypad: false
+            card_mod:
+              style:
+                $: |
+                  /* === TARGET ALARMO CARD INSIDE BUBBLE POP-UP === */
+                  alarmo-card {
+                    --g: var(--nostromo-green, #00ff7a);
+                    --a: var(--nostromo-amber, #ffb000);
+                  }
+                  alarmo-card ha-card {
+                    background: transparent !important;
+                    border: none !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace) !important;
+                    color: var(--g) !important;
+                    letter-spacing: 1px !important;
+                    font-size: 16px !important;
+                    box-shadow: none !important;
+                  }
+                  alarmo-card .card-header {
+                    color: var(--g) !important;
+                    font-size: 18px !important;
+                    text-align: center !important;
+                    margin-bottom: 8px !important;
+                  }
+                  alarmo-card .state {
+                    color: var(--g) !important;
+                    font-size: 18px !important;
+                    text-transform: uppercase !important;
+                  }
+                  alarmo-card .action-button {
+                    background: rgba(0,255,122,0.1) !important;
+                    color: var(--g) !important;
+                    border: 1px solid rgba(0,255,122,0.3) !important;
+                    border-radius: 4px !important;
+                    font-family: var(--nostromo-font) !important;
+                    font-size: 16px !important;
+                    padding: 8px 16px !important;
+                    margin: 4px !important;
+                  }
+                  alarmo-card .action-button:hover {
+                    background: rgba(0,255,122,0.2) !important;
+                  }
+                  alarmo-card .keypad-button {
+                    background: rgba(0,255,122,0.1) !important;
+                    color: var(--g) !important;
+                    border: 1px solid rgba(0,255,122,0.3) !important;
+                    border-radius: 4px !important;
+                    font-family: var(--nostromo-font) !important;
+                    font-size: 18px !important;
+                    width: 48px !important;
+                    height: 48px !important;
+                    margin: 4px !important;
+                  }
+                  alarmo-card .keypad-button:hover {
+                    background: rgba(0,255,122,0.2) !important;
+                  }
+                  alarmo-card .indicator {
+                    color: var(--g) !important;
+                    font-size: 14px !important;
+                  }
+                  alarmo-card .message {
+                    color: var(--a) !important;
+                    font-size: 14px !important;
+                  }
+                  alarmo-card .code-input {
+                    background: rgba(0,255,122,0.05) !important;
+                    color: var(--g) !important;
+                    border: 1px solid rgba(0,255,122,0.3) !important;
+                    border-radius: 4px !important;
+                    font-family: var(--nostromo-font) !important;
+                    font-size: 18px !important;
+                  }
+                  alarmo-card ha-icon {
+                    display: none !important;
+                  }
+                  alarmo-card * {
+                    box-shadow: none !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                  }
+                  alarmo-card :host([state="armed_away"]),
+                  alarmo-card :host([state="armed_home"]),
+                  alarmo-card :host([state="armed_night"]) {
+                    --g: var(--a) !important;
+                  }
+  - type: grid
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#bins"
+            name: ":. BIN STATUS"
+            icon: ""
+            trigger_entity: input_boolean.bin_notification
+            trigger_state: "on"
+            trigger_close: true
+            auto_close: ""
+            width_desktop: 500px
+            margin_top_mobile: 20px
+            margin_top_desktop: 80px
+            is_sidebar_hidden: true
+            card:
+              type: vertical-stack
+              cards:
+                - type: entities
+                  entities:
+                    - entity: binary_sensor.bifold_door_sensor_contact
+                      name: Bifold Door
+                    - entity: binary_sensor.front_door_sensor
+                      name: Front Door
+                - type: picture-entity
+                  entity: camera.door_cam
+                  show_state: true
+                  show_name: true
+                - type: custom:bubble-card
+                  card_type: separator
+                  name: Controls
+                  icon: mdi:door-closed
+                - type: horizontal-stack
+                  cards:
+                    - type: custom:bubble-card
+                      card_type: button
+                      entity: switch.door_lock
+                      button_type: toggle
+                      icon: mdi:lock
+            button_type: switch
+            styles: |
+              card_mod:
+                style: |
+                  ha-card {
+                    --g: var(--nostromo-green, #00ff7a);
+                    --a: var(--nostromo-amber, #ffb000);
+                    background: transparent;
+                    border: 1px solid rgba(0,255,122,0.3);
+                    padding: 8px;
+                    font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+                    color: var(--g);
+                    letter-spacing: 1px;
+                    font-size: 16px;
+                    border-radius: 4px;
+                    height: 60px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 !important;
+                    min-height: 0 !important;
+                  }
+              #root:not(.editor) {
+                top: ${this.config.more_info_popup?.center ? 'auto' : this.config.more_info_popup?.top || '40px'} !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                bottom: ${this.config.more_info_popup?.bottom || 'auto'} !important;
+                height: auto !important;
+                max-height: ${this.config.more_info_popup?.max_height || 'calc(100% - 72px)'} !important;
+                width: 96%;
+                font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+                --desktop-width: ${this.config.more_info_popup?.dt_width || '60vw'} !important;
+                align-self: ${this.config.more_info_popup?.center ? 'anchor-center' : 'none'};
+                transition: transform 0.4s ease !important;
+              }
+
+              .bubble-close-button {
+                transition: ${this.config.more_info_popup?.window_speed || 'all 0.4s ease'} !important;
+              }
+              .bubble-pop-up-container {
+                padding: 20px !important;
+                mask-image: none !important;
+                overflow: scroll;
+                grid-gap: 7px;
+
+              }
+              .bubble-pop-up-background {
+                border-radius:  1px !important;
+                border: solid 4px #ffb000 !important;
+              }
+              .bubble-backdrop {
+                background-color: ${this.config.more_info_popup?.bg_color || 'rgba(0, 0, 0, 0.2)'} !important;
+                backdrop-filter: ${this.config.more_info_popup?.bd_filter || 'blur(10px)'} !important;
+                transition-delay: 0 !important;
+                transition: opacity 0.2s !important;
+                
+              }
+              .bubble-backdrop.is-visible {
+                opacity: 0.7 !important;
+              }
+              .is-popup-closed:not(.editor) { 
+                transform: ${this.config.more_info_popup?.window_ani || 'scale(0.1)'} !important;
+                opacity: ${this.config.more_info_popup?.window_ani === 'scale(0.1)' ? '0.1' : 'null'} !important;
+                transition: opacity 0.4s ease !important;
+              }
+              .is-popup-opened {
+                opacity: 1 !important;
+                transition: opacity 0.4s ease !important;
+              }
+            show_icon: false
+          - type: custom:bubble-card
+            card_type: button
+            button_type: switch
+            entity: input_boolean.bin_notification
+            name: Did you put the bins out?
+            show_name: true
+            show_state: false
+            sub_button:
+              - entity: input_boolean.bin_notification
+                name: "YES"
+                show_name: true
+                icon: ""
+                tap_action:
+                  action: toggle
+                show_attribute: false
+                show_last_changed: false
+                show_state: false
+                show_background: true
+                show_icon: false
+                state_background: false
+            tap_action:
+              action: none
+            double_tap_action:
+              action: none
+            hold_action:
+              action: none
+            card_layout: large
+            show_attribute: false
+            show_last_changed: false
+            force_icon: false
+            show_icon: true
+            scrolling_effect: true
+            button_action:
+              tap_action:
+                action: none
+              double_tap_action:
+                action: none
+              hold_action:
+                action: none
+            styles: |2-
+                /* Main button - COMPLETELY TRANSPARENT */
+                .bubble-button-background {
+                  background-color: transparent !important;
+                  opacity: 0 !important;
+                  border: none !important;
+                  border-radius: 1 !important;
+                }
+
+                * { 
+                  font-size: 18px !important;
+                  text-transform: uppercase;
+                }
+              ha-card {
+                --bubble-main-background-color: transparent !important;
+              }
+                  
+                /* Sub-button - square, no rounded corners */
+                .bubble-sub-button-1 {
+                  background-color: transparent !important;
+                  border-radius: 1px !important;
+                  border: 2px solid #00ff7a;
+                  padding: 25px;
+                  animation: nostromo-blink 2s steps(1,end) infinite;
+               
+                }
+                
+                /* Icon color */
+                .bubble-icon {
+                  color: #00ff7a !important;
+                   }
+                   
+                  @keyframes nostromo-blink {
+                    0%,39% { opacity: 1 }
+                    10%,100% { opacity: 0 }
+                  }
+            visibility:
+              - condition: state
+                entity: input_boolean.bin_notification
+                state: "on"
+            show_last_updated: false
+            rows: "2"
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#weather_warning"
+            name: ":. WEATHER WARNINGS"
+            icon: ""
+            trigger_entity: sensor.met_office_derbyshire_warnings
+            trigger_state: "on"
+            trigger_close: true
+            auto_close: ""
+            width_desktop: 500px
+            margin_top_mobile: 20px
+            margin_top_desktop: 80px
+            is_sidebar_hidden: true
+            button_type: switch
+            styles: |
+              card_mod:
+                style: |
+                  ha-card {
+                    --g: var(--nostromo-green, #00ff7a);
+                    --a: var(--nostromo-amber, #ffb000);
+                    background: transparent;
+                    border: 1px solid rgba(0,255,122,0.3);
+                    padding: 8px;
+                    font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+                    color: var(--g);
+                    letter-spacing: 1px;
+                    font-size: 16px;
+                    border-radius: 4px;
+                    height: 60px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 !important;
+                    min-height: 0 !important;
+                  }
+              #root:not(.editor) {
+                top: ${this.config.more_info_popup?.center ? 'auto' : this.config.more_info_popup?.top || '40px'} !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                bottom: ${this.config.more_info_popup?.bottom || 'auto'} !important;
+                height: auto !important;
+                max-height: ${this.config.more_info_popup?.max_height || 'calc(100% - 72px)'} !important;
+                width: 96%;
+                font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+                --desktop-width: ${this.config.more_info_popup?.dt_width || '60vw'} !important;
+                align-self: ${this.config.more_info_popup?.center ? 'anchor-center' : 'none'};
+                transition: transform 0.4s ease !important;
+              }
+
+              .bubble-close-button {
+                transition: ${this.config.more_info_popup?.window_speed || 'all 0.4s ease'} !important;
+              }
+              .bubble-pop-up-container {
+                padding: 20px !important;
+                mask-image: none !important;
+                overflow: scroll;
+                grid-gap: 7px;
+
+              }
+              .bubble-pop-up-background {
+                border-radius:  1px !important;
+                border: solid 4px #ffb000 !important;
+              }
+              .bubble-backdrop {
+                background-color: ${this.config.more_info_popup?.bg_color || 'rgba(0, 0, 0, 0.2)'} !important;
+                backdrop-filter: ${this.config.more_info_popup?.bd_filter || 'blur(10px)'} !important;
+                transition-delay: 0 !important;
+                transition: opacity 0.2s !important;
+                
+              }
+              .bubble-backdrop.is-visible {
+                opacity: 0.7 !important;
+              }
+              .is-popup-closed:not(.editor) { 
+                transform: ${this.config.more_info_popup?.window_ani || 'scale(0.1)'} !important;
+                opacity: ${this.config.more_info_popup?.window_ani === 'scale(0.1)' ? '0.1' : 'null'} !important;
+                transition: opacity 0.4s ease !important;
+              }
+              .is-popup-opened {
+                opacity: 1 !important;
+                transition: opacity 0.4s ease !important;
+              }
+            show_icon: false
+            trigger:
+              - condition: state
+                entity: sensor.met_office_derbyshire_warnings
+                state_not: "0"
+          - type: markdown
+            content: >
+              {% set ent = 'sensor.met_office_derbyshire_warnings' %}
+
+              {% set items = state_attr(ent,'warnings') or [] %}
+
+
+              <h3>⚠️ Met Office warnings for Derbyshire ({{ items|length
+              }})</h3>
+
+              {% for w in items %}
+
+              {% set sev = (w.severity or 'unknown') | lower %}
+
+              {% set sev_icon = '🟨' if sev=='yellow' else '🟧' if sev=='amber'
+              else '🟥' if sev=='red' else '⚠️' %}
+
+              <div style="margin:0 0 .75rem 0;">
+
+              <div><strong>{{ sev_icon }} {{ sev|upper }}{% if w.hazard and
+              w.hazard!='unknown' %} – {{ w.hazard|title }}{% endif
+              %}</strong></div>
+
+              <div><em>{{ w.title }}</em></div>
+
+              <div style="margin:.25rem 0 .5rem 0;">{{ w.summary }}</div>
+
+              {% if w.link %}<a href="{{ w.link }}">View details</a>{% endif %}
+
+              </div>
+
+              {% if not loop.last %}<hr
+              style="opacity:.25;border:none;border-top:1px solid
+              var(--divider-color,#999);" />{% endif %}
+
+              {% endfor %}
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#chores"
+            name: ":. Chores"
+            icon: ""
+            trigger_entity: sensor.met_office_derbyshire_warnings
+            trigger_state: "on"
+            trigger_close: true
+            auto_close: ""
+            width_desktop: 500px
+            margin_top_mobile: 20px
+            margin_top_desktop: 80px
+            is_sidebar_hidden: true
+            button_type: switch
+            styles: |
+              card_mod:
+                style: |
+                  ha-card {
+                    --g: var(--nostromo-green, #00ff7a);
+                    --a: var(--nostromo-amber, #ffb000);
+                    background: transparent;
+                    border: 1px solid rgba(0,255,122,0.3);
+                    padding: 8px;
+                    font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+                    color: var(--g);
+                    letter-spacing: 1px;
+                    font-size: 16px;
+                    border-radius: 4px;
+                    height: 60px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 !important;
+                    min-height: 0 !important;
+                  }
+              #root:not(.editor) {
+                top: ${this.config.more_info_popup?.center ? 'auto' : this.config.more_info_popup?.top || '40px'} !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                bottom: ${this.config.more_info_popup?.bottom || 'auto'} !important;
+                height: auto !important;
+                max-height: ${this.config.more_info_popup?.max_height || 'calc(100% - 72px)'} !important;
+                width: 96%;
+                font-family: var(--nostromo-font, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+                --desktop-width: ${this.config.more_info_popup?.dt_width || '60vw'} !important;
+                align-self: ${this.config.more_info_popup?.center ? 'anchor-center' : 'none'};
+                transition: transform 0.4s ease !important;
+              }
+
+              .bubble-close-button {
+                transition: ${this.config.more_info_popup?.window_speed || 'all 0.4s ease'} !important;
+              }
+              .bubble-pop-up-container {
+                padding: 20px !important;
+                mask-image: none !important;
+                overflow: scroll;
+                grid-gap: 7px;
+
+              }
+              .bubble-pop-up-background {
+                border-radius:  1px !important;
+                border: solid 4px #ffb000 !important;
+              }
+              .bubble-backdrop {
+                background-color: ${this.config.more_info_popup?.bg_color || 'rgba(0, 0, 0, 0.2)'} !important;
+                backdrop-filter: ${this.config.more_info_popup?.bd_filter || 'blur(10px)'} !important;
+                transition-delay: 0 !important;
+                transition: opacity 0.2s !important;
+                
+              }
+              .bubble-backdrop.is-visible {
+                opacity: 0.7 !important;
+              }
+              .is-popup-closed:not(.editor) { 
+                transform: ${this.config.more_info_popup?.window_ani || 'scale(0.1)'} !important;
+                opacity: ${this.config.more_info_popup?.window_ani === 'scale(0.1)' ? '0.1' : 'null'} !important;
+                transition: opacity 0.4s ease !important;
+              }
+              .is-popup-opened {
+                opacity: 1 !important;
+                transition: opacity 0.4s ease !important;
+              }
+            show_icon: false
+            trigger:
+              - condition: state
+                entity: sensor.met_office_derbyshire_warnings
+                state_not: "0"
+          - type: custom:grocy-chores-card
+            entity:
+              - sensor.grocy_chores
+            title: Chores
+            show_quantity: 5
+            show_days: 3
+            show_assigned: true
+            show_overflow: true
+            show_chores_without_due: true
+            show_tasks_without_due: true
+            use_icons: true
+            use_long_date: true
+            due_in_days_threshold: 7
+            use_24_hours: true
+            hide_text_with_no_data: true
+type: sections
+max_columns: 2
+theme: Nostromo CRT 2
+cards: []
+dense_section_placement: true
+path: overview
