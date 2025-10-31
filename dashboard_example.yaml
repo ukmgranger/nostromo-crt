@@ -152,14 +152,14 @@ sections:
         text_only: true
         entity_id:
           - sensor.time
-          - person.martin
-          - person.clare
-          - person.erin
+          - person.person1
+          - person.person2
+          - person.person3
           - alarm_control_panel.alarmo
           - sensor.bin_day_sensor
         content: >
           USCSS 23DC  |  DATE: {{ now().strftime('%d%m%y') }}  |  CREW: {{
-          expand('person.martin','person.clare','person.erin')
+          expand('person.person1','person.person2','person.person3')
              | selectattr('state','eq','home') | list | length }}
           NEXT BIN: {{ state_attr('sensor.bin_day_sensor', 'bin_type') | upper
           }} {{ states('sensor.bin_day_sensor') }} |  </br>SECURITY: {{
