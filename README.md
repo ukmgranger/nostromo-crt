@@ -95,3 +95,12 @@ card_mod:
   
   
   ``` </pre>
+
+**Credits**
+Inspired by the design language of the Alien franchise and the industrial systems aesthetic of Weyland-Yutani Corporation.
+Created and maintained by Andrew504s.
+
+**Disclaimer**
+This is an independent fan-made project inspired by the Alien film franchise.
+Weyland-Yutani Corp, USCSS Nostromo, and related names, logos, and imagery are the property of 20th Century Studios (a subsidiary of The Walt Disney Company).
+This project is not affiliated with, endorsed by, or associated with 20th Century Studios or Disney in any way.
