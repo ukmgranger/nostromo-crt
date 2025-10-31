@@ -1,7 +1,7 @@
 This is an example of my version of the nostromo_crt theme originally created here:
 https://github.com/Andrew504s/weyland-home-assistant-theme/tree/main
 
-I have made several changes to the original.
+I have made several changes to the original theme and I am providing this code purely as an example.  This comes with no support / install instuctions etc.
 
 In particular, I have tried to put as much of the card_mod styling into the theme as possible.
 <img width="1121" height="687" alt="chrome_NBN11wkNNC" src="https://github.com/user-attachments/assets/b86e9a85-5051-4044-bf2e-f12bd74cbafe" />
